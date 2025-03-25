@@ -159,3 +159,9 @@ pyvenv.cfg
 pip-selfcheck.json
 
 # End of https://www.toptal.com/developers/gitignore/api/venv,intellij+all,pycharm+all
+
+# 환경 설정 파일
+.env
+
+# macOS 시스템 파일
+.DS_Store
