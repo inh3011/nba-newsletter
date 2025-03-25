@@ -1,8 +1,10 @@
 from pydantic import BaseModel
 from datetime import datetime
 
-class User(BaseModel):
+class UserCreate(BaseModel):
     email: str
-    timezone: str = "Asia/Seoul"
-    created_at: datetime = datetime.now()
-    updated_at: datetime = datetime.now()
+
+class UserOut(BaseModel):
+    email: str
+    created_at: datetime
+    updated_at: datetime
