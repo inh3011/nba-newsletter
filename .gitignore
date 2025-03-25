@@ -160,8 +160,19 @@ pip-selfcheck.json
 
 # End of https://www.toptal.com/developers/gitignore/api/venv,intellij+all,pycharm+all
 
-# 환경 설정 파일
-.env
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
 
-# macOS 시스템 파일
+# VSCode / PyCharm
+.vscode/
+.idea/
+
+# Environment
+.env
+.venv/
+venv/
+
+# macOS
 .DS_Store
