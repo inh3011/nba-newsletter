@@ -1,11 +1,12 @@
 from balldontlie import BalldontlieAPI
 from datetime import datetime, timedelta, timezone
+from dotenv import load_dotenv
 import pytz
 
 import os
 
-
-api = BalldontlieAPI(api_key=os.getenv("BALLDONTLIE_API_KEY", ""))
+load_dotenv()
+api = BalldontlieAPI(api_key=os.getenv("BALLDONTLIE_API_KEY"))
 
 def get_today_us_date():
     """

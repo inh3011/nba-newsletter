@@ -1,22 +1,25 @@
 from fastapi import APIRouter, HTTPException
+from datetime import datetime, timezone
+
 from app.models.user import UserCreate, UserOut
 from app.core.dynamodb import get_table
-from datetime import datetime, timezone
+from app.services import balldontlie
+
+import traceback
 import os
 
 router = APIRouter()
 TABLE_NAME = os.getenv("USERS_TABLE_NAME", "users")
 
-
 @router.post("/subscribe", response_model=UserOut)
 def register_user(user: UserCreate):
     table = get_table(TABLE_NAME)
-    now = datetime.now(timezone.utc).isoformat()
-
     item = {
         "email": user.email,
-        "created_at": now,
-        "updated_at": now
+        "teams": [],
+        "players": [],
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": datetime.now(timezone.utc).isoformat()
     }
 
     try:
@@ -40,20 +43,39 @@ def get_user(email: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# @router.put("/users/{email}")
-# def update_user(email: str, user: User):
-#     table = get_table(TABLE_NAME)
-    
-#     try:
-#         response = table.update_item(
-#             Key={"email": email},
-#             UpdateExpression="set timezone=:tz",
-#             ExpressionAttributeValues={":tz": user.timezone},
-#             ReturnValues="ALL_NEW"
-#         )
-#         return response["Attributes"]
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
+@router.patch("/{email}/teams", response_model=UserOut)
+def update_user_teams(email: str, team_ids: list[int]):
+    table = get_table(TABLE_NAME)
+    try:
+        all_teams = balldontlie.get_team_list()
+
+        selected = [
+            {
+                "id": team.id,
+                "name": team.full_name,
+                "abbreviation": team.abbreviation
+            }
+            for team in all_teams
+            if team.id in team_ids
+        ]
+
+
+        response = table.update_item(
+            Key={"email": email},
+            UpdateExpression="SET teams = :teams, updated_at = :updated_at",
+            ExpressionAttributeValues={
+                ":teams": selected,
+                ":updated_at": datetime.now(timezone.utc).isoformat()
+            },
+            ReturnValues="ALL_NEW"
+        )
+        return response["Attributes"]
+
+    except Exception as e:
+        print("[ERROR] update_user_teams failed:", e)
+        traceback.print_exc()
+
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/unsubscribe/{email}")
 def delete_user(email: str):
