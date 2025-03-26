@@ -2,8 +2,10 @@ from balldontlie import BalldontlieAPI
 from datetime import datetime, timedelta, timezone
 import pytz
 
+import os
 
-api = BalldontlieAPI(api_key="4d01d36e-5ef5-4f10-b3b4-9245015fb9bd")
+
+api = BalldontlieAPI(api_key=os.getenv("BALLDONTLIE_API_KEY", ""))
 
 def get_today_us_date():
     """
@@ -50,7 +52,7 @@ def get_team_game_today(team: str):
     오늘 날짜 기준으로 특정 팀의 경기만 필터링
     team: 팀 이름 일부, 약어, 또는 전체 이름
     """
-    games = get_games_by_da8]te()
+    games = get_games_by_date()
     filtered = []
 
     for game in games:
