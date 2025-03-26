@@ -3,7 +3,7 @@ from app.services import balldontlie
 
 router = APIRouter()
 
-@router.get("/games/today")
+@router.get("/today")
 def get_games_today():
     """
     오늘 날짜 기준으로 경기 결과 조회
@@ -12,7 +12,7 @@ def get_games_today():
     return games
 
 
-@router.get("/games/{date}")
+@router.get("/{date}")
 def get_games_by_date(date: str):
     """
     특정 날짜(YYYY-MM-DD)의 경기 결과 조회
@@ -48,7 +48,7 @@ def get_player_stats(player_id: int):
     return stats
 
 
-@router.get("/games/today/by-team")
+@router.get("/today/by-team")
 def get_team_game_today(team: str):
     """
     오늘 경기 중 특정 팀의 경기만 조회
