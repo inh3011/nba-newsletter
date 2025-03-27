@@ -10,7 +10,7 @@ api = BalldontlieAPI(api_key=os.getenv("BALLDONTLIE_API_KEY"))
 
 def get_today_us_date():
     """
-    현재 미국 동부 기준 날짜 반환 (YYYY-MM-DD)
+    Returns today's date in US Eastern Time (format: YYYY-MM-DD).
     """
     est = pytz.timezone("US/Eastern")
     now_est = datetime.now(est)
@@ -18,8 +18,8 @@ def get_today_us_date():
 
 def get_games_by_date(date_str: str = None):
     """
-    주어진 날짜(YYYY-MM-DD)의 NBA 경기 데이터를 조회합니다.
-    date_str가 없으면 오늘 날짜 기준으로 조회합니다.
+    Retrieves NBA game data for the specified date (YYYY-MM-DD).
+    If no date is provided, defaults to today's date (US Eastern).
     """
     if not date_str:
         date_str = get_today_us_date()
@@ -29,29 +29,41 @@ def get_games_by_date(date_str: str = None):
 
 def get_team_list():
     """
-    전체 NBA 팀 목록을 반환합니다.
+    Returns a list of all NBA teams.
     """
     response = api.nba.teams.list()
     return response.data
 
+def get_team_by_id(team_id: int):
+    """
+    Retrieves NBA team information by team ID.
+    """
+    response = api.nba.teams.get(team_id)
+    return response.data
+
 def search_players(search: str):
     """
-    이름 또는 키워드로 선수 검색합니다.
+    Searches NBA players by name or keyword.
     """
     response = api.nba.players.list(search=search, per_page=25)
     return response.data
 
 def get_player_stats(player_id: int):
     """
-    특정 선수의 경기 스탯을 조회합니다.
+    Retrieves recent game stats for a specific player.
     """
     response = api.nba.stats.list(player_ids=[player_id], per_page=10)
     return response.data
 
 def get_team_game_today(team: str):
     """
-    오늘 날짜 기준으로 특정 팀의 경기만 필터링
-    team: 팀 이름 일부, 약어, 또는 전체 이름
+    Filters today's games and returns only those involving the specified team.
+
+    Args:
+        team (str): Team abbreviation (e.g. "GSW"), full name, or partial match.
+
+    Returns:
+        list: Games where the specified team is either home or visitor.
     """
     games = get_games_by_date()
     filtered = []
