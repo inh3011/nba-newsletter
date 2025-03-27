@@ -13,6 +13,9 @@ TABLE_NAME = os.getenv("USERS_TABLE_NAME", "users")
 
 @router.post("/subscribe", response_model=UserOut)
 def register_user(user: UserCreate):
+    """
+    Subscribe to the newsletter.
+    """
     table = get_table(TABLE_NAME)
     item = {
         "email": user.email,
@@ -30,6 +33,9 @@ def register_user(user: UserCreate):
     
 @router.get("/subscribe/{email}", response_model=UserOut)
 def get_user(email: str):
+    """
+    Retrieve newsletter subscription info by email.
+    """
     table = get_table(TABLE_NAME)
 
     try:
@@ -45,6 +51,9 @@ def get_user(email: str):
 
 @router.patch("/{email}/teams", response_model=UserOut)
 def update_user_teams(email: str, team_ids: list[int]):
+    """
+    Update the list of favorite teams for the newsletter.
+    """
     table = get_table(TABLE_NAME)
     try:
         all_teams = balldontlie.get_team_list()
@@ -79,6 +88,9 @@ def update_user_teams(email: str, team_ids: list[int]):
 
 @router.delete("/unsubscribe/{email}")
 def delete_user(email: str):
+    """
+    Unsubscribe from the newsletter.
+    """
     table = get_table(TABLE_NAME)
     
     try:
