@@ -56,13 +56,6 @@ uvicorn app.main:app --reload
 Visit: [http://localhost:8000/docs](http://localhost:8000/docs)  
 Use the built-in Swagger UI to test your API.
 
-## Upcoming Features
-
-- Automated daily newsletter generation based on actual game stats
-- Deployment with Lambda and EventBridge for scheduled execution
-- API for deleting users and updating watchlist (players/teams)
-- Logging and monitoring of email delivery history
-
 ## External APIs
 
 - [https://www.balldontlie.io](https://www.balldontlie.io)
