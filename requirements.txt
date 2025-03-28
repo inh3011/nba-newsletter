@@ -7,3 +7,4 @@ python-dotenv
 pydantic
 balldontlie
 pytz
+nba_api
