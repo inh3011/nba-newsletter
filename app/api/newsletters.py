@@ -1,7 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Response
+from app.services.newsletter import render_newsletter_html
 
 router = APIRouter()
 
-@router.get("")
-def test_newsletter():
-    return {"message": "뉴스레터 테스트"}
+@router.get("/preview")
+def preview_newsletter():
+    html = render_newsletter_html()
+    return Response(content=html, media_type="text/html")

@@ -1,5 +1,7 @@
 from fastapi import APIRouter
-from app.services import balldontlie
+from app.services import games as game_service
+from app.services import teams as team_service
+from app.services import players as player_service
 
 router = APIRouter()
 
@@ -8,45 +10,8 @@ def get_games_today():
     """
     Retrieve NBA game results for today (Eastern Time).
     """
-    games = balldontlie.get_games_by_date()
+    games = game_service.get_games_by_date()
     return games
-
-
-@router.get("/{date}")
-def get_games_by_date(date: str):
-    """
-    Retrieve NBA game results for a specific date.
-    """
-    games = balldontlie.get_games_by_date(date)
-    return games
-
-
-@router.get("/teams")
-def get_teams():
-    """
-    Get the list of all NBA teams.
-    """
-    teams = balldontlie.get_team_list()
-    return teams
-
-
-@router.get("/players/search")
-def search_players(search: str):
-    """
-    Search NBA players by name or keyword.
-    """
-    players = balldontlie.search_players(search)
-    return players
-
-
-@router.get("/players/{player_id}/stats")
-def get_player_stats(player_id: int):
-    """
-    Get recent game stats for a specific player.
-    """
-    stats = balldontlie.get_player_stats(player_id)
-    return stats
-
 
 @router.get("/today/by-team")
 def get_team_game_today(team: str):
@@ -54,5 +19,21 @@ def get_team_game_today(team: str):
     Retrieve today's game(s) for a specific team.
     ex: /games/today/by-team?team=GSW
     """
-    result = balldontlie.get_team_game_today(team)
+    result = game_service.get_team_game_today(team)
     return result
+
+@router.get("/{date}")
+def get_games_by_date(date: str):
+    """
+    Retrieve NBA game results for a specific date.
+    """
+    games = game_service.get_games_by_date(date)
+    return games
+
+@router.get("/today/user-teams/{email}")
+def get_user_team_games(email: str):
+    """
+    Get today's games for the teams registered by a user.
+    """
+    games = game_service.get_user_team_games_today(email)
+    return games

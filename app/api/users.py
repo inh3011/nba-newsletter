@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 from app.models.user import UserCreate, UserOut
 from app.core.dynamodb import get_table
-from app.services import balldontlie
+from app.services import teams as team_service
 
 import traceback
 import os
@@ -50,22 +50,22 @@ def get_user(email: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.patch("/{email}/teams", response_model=UserOut)
-def update_user_teams(email: str, team_ids: list[int]):
+def update_user_teams(email: str, team_names: list[str]):
     """
     Update the list of favorite teams for the newsletter.
     """
     table = get_table(TABLE_NAME)
     try:
-        all_teams = balldontlie.get_team_list()
+        all_teams = team_service.get_team_list()
 
         selected = [
             {
-                "id": team.id,
-                "name": team.full_name,
-                "abbreviation": team.abbreviation
+                "id": team['id'],
+                "name": team['full_name'],
+                "abbreviation": team['abbreviation']
             }
             for team in all_teams
-            if team.id in team_ids
+            if team['full_name'] in team_names
         ]
 
 
