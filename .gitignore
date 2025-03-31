@@ -173,6 +173,9 @@ __pycache__/
 .env
 .venv/
 venv/
-
+venv_win/
+venv_mac/
+venv_linux/
 # macOS
 .DS_Store
+
