@@ -181,3 +181,7 @@ venv_linux/
 
 # Coverage
 .coverage
+
+# lambda
+lambda/build
+nba_lambda_deploy.zip
