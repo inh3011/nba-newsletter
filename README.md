@@ -22,7 +22,7 @@ NBA Daily Digest is an automated newsletter system that delivers daily game summ
 - DynamoDB (AWS NoSQL)
 - AWS Lambda + EventBridge (for scheduling)
 - AWS SES or SMTP (for sending emails)
-- [balldontlie.io](https://www.balldontlie.io) (NBA open data API)
+- NBA API (nba_api)
 - Jinja2 (HTML templating)
 
 ## Project Structure
@@ -59,3 +59,4 @@ Use the built-in Swagger UI to test your API.
 ## External APIs
 
 - [https://www.balldontlie.io](https://www.balldontlie.io)
+- NBA API (nba_api)
