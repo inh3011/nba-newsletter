@@ -8,3 +8,5 @@ pydantic
 balldontlie
 pytz
 nba_api
+pytest
+coverage
