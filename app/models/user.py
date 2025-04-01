@@ -16,7 +16,7 @@ class UserCreate(BaseModel):
 
 class UserOut(BaseModel):
     email: str
-    teams: Optional[List[Team]] = []
-    players: Optional[List[Player]] = []
+    teams: Optional[List[Team]]
+    players: Optional[List[Player]]
     created_at: datetime
     updated_at: datetime
