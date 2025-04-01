@@ -179,3 +179,5 @@ venv_linux/
 # macOS
 .DS_Store
 
+# Coverage
+.coverage
