@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from datetime import datetime, timezone
 
 from app.models.user import UserCreate, UserOut
+from app.models.api import APIResponse
 from app.core.dynamodb import get_table
 from app.services import teams as team_service
 
@@ -11,27 +12,47 @@ import os
 router = APIRouter()
 TABLE_NAME = os.getenv("USERS_TABLE_NAME", "users")
 
-@router.post("/subscribe", response_model=UserOut)
+@router.get("/subscribers", response_model=APIResponse[list[UserOut]])
+def list_subscribers():
+    """
+    Get all newsletter subscribers.
+    """
+    table = get_table(TABLE_NAME)
+    
+    try:
+        response = table.scan()
+        items = response.get("Items", [])
+        return APIResponse.success_response(items, "Successfully retrieved subscribers")
+    except Exception as e:
+        return APIResponse.error_response(str(e), "Failed to retrieve subscribers")
+
+@router.post("/subscribe", response_model=APIResponse[UserOut])
 def register_user(user: UserCreate):
     """
     Subscribe to the newsletter.
     """
     table = get_table(TABLE_NAME)
-    item = {
-        "email": user.email,
-        "teams": [],
-        "players": [],
-        "created_at": datetime.now(timezone.utc).isoformat(),
-        "updated_at": datetime.now(timezone.utc).isoformat()
-    }
-
-    try:
-        table.put_item(Item=item)
-        return item
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
     
-@router.get("/subscribe/{email}", response_model=UserOut)
+    # Check for existing user with the same email
+    try:
+        existing_user = table.get_item(Key={"email": user.email}).get("Item")
+        if existing_user:
+            return APIResponse.error_response("Email already registered", "Registration failed")
+            
+        item = {
+            "email": user.email,
+            "teams": [],
+            "players": [],
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        table.put_item(Item=item)
+        return APIResponse.success_response(item, "User registered successfully")
+    except Exception as e:
+        return APIResponse.error_response(str(e), "Failed to register user")
+    
+@router.get("/subscribe/{email}", response_model=APIResponse[UserOut])
 def get_user(email: str):
     """
     Retrieve newsletter subscription info by email.
@@ -43,13 +64,13 @@ def get_user(email: str):
         item = response.get("Item")
 
         if not item:
-            raise HTTPException(status_code=404, detail="User not found")
+            return APIResponse.error_response("User not found", "Retrieval failed")
 
-        return item
+        return APIResponse.success_response(item, "User retrieved successfully")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return APIResponse.error_response(str(e), "Failed to retrieve user")
 
-@router.patch("/{email}/teams", response_model=UserOut)
+@router.patch("/{email}/teams", response_model=APIResponse[UserOut])
 def update_user_teams(email: str, team_names: list[str]):
     """
     Update the list of favorite teams for the newsletter.
@@ -78,15 +99,14 @@ def update_user_teams(email: str, team_names: list[str]):
             },
             ReturnValues="ALL_NEW"
         )
-        return response["Attributes"]
+        return APIResponse.success_response(response["Attributes"], "Teams updated successfully")
 
     except Exception as e:
         print("[ERROR] update_user_teams failed:", e)
         traceback.print_exc()
+        return APIResponse.error_response(str(e), "Failed to update teams")
 
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.delete("/unsubscribe/{email}")
+@router.delete("/unsubscribe/{email}", response_model=APIResponse[dict])
 def delete_user(email: str):
     """
     Unsubscribe from the newsletter.
@@ -95,6 +115,6 @@ def delete_user(email: str):
     
     try:
         table.delete_item(Key={"email": email})
-        return {"message": "User deleted successfully"}
+        return APIResponse.success_response({"email": email}, "Successfully unsubscribed user")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return APIResponse.error_response(str(e), "Failed to unsubscribe user")
