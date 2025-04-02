@@ -1,0 +1,47 @@
+{
+    "FunctionName": "nbaNewsletter",
+    "FunctionArn": "arn:aws:lambda:ap-northeast-2:915650020635:function:nbaNewsletter",
+    "Runtime": "python3.13",
+    "Role": "arn:aws:iam::915650020635:role/service-role/nbaNewsletter-role-a4pn5p5y",
+    "Handler": "lambda_function.lambda_handler",
+    "CodeSize": 50066917,
+    "Description": "",
+    "Timeout": 3,
+    "MemorySize": 128,
+    "LastModified": "2025-04-02T04:19:09.000+0000",
+    "CodeSha256": "SUsMrg96PjmFMKOdjyN5OiJtWkiCOGPcEjYR9kdqdBg=",
+    "Version": "$LATEST",
+    "Environment": {
+        "Variables": {
+            "GMAIL_APP_PASSWORD": "wmyfcxrpvlrosouq",
+            "USERS_TABLE_NAME": "Users",
+            "GMAIL_ADDRESS": "inh3011@gmail.com"
+        }
+    },
+    "TracingConfig": {
+        "Mode": "PassThrough"
+    },
+    "RevisionId": "231c73f2-18ed-4c71-80c1-5971da72c740",
+    "State": "Active",
+    "LastUpdateStatus": "InProgress",
+    "LastUpdateStatusReason": "The function is being created.",
+    "LastUpdateStatusReasonCode": "Creating",
+    "PackageType": "Zip",
+    "Architectures": [
+        "x86_64"
+    ],
+    "EphemeralStorage": {
+        "Size": 512
+    },
+    "SnapStart": {
+        "ApplyOn": "None",
+        "OptimizationStatus": "Off"
+    },
+    "RuntimeVersionConfig": {
+        "RuntimeVersionArn": "arn:aws:lambda:ap-northeast-2::runtime:f713ac0afb982fcdf9bac88eaa00c31352efae870b225c19f1603fe79159a6f1"
+    },
+    "LoggingConfig": {
+        "LogFormat": "Text",
+        "LogGroup": "/aws/lambda/nbaNewsletter"
+    }
+}
