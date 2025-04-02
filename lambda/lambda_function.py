@@ -9,8 +9,7 @@ from datetime import datetime
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.getenv("USERS_TABLE_NAME", "Users"))
 
-# 📄 템플릿 설정
-env = Environment(loader=FileSystemLoader("."))  # 현재 디렉토리에서 로딩
+env = Environment(loader=FileSystemLoader("."))
 template = env.get_template("newsletter_template.html")
 
 def send_email(to_email, subject, html_body):
@@ -40,7 +39,7 @@ def lambda_handler(event, context):
 
     for user in users:
         email = user.get("email")
-        teams = user.get("teams", [])  # [{ "abbreviation": "GSW", ... }]
+        teams = user.get("teams", [])
 
         fav_abbr = [t["abbreviation"] for t in teams]
         matched_games = [
