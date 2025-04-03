@@ -71,7 +71,7 @@ def get_user(email: str):
         return APIResponse.error_response(str(e), "Failed to retrieve user")
 
 @router.patch("/{email}/teams", response_model=APIResponse[UserOut])
-def update_user_teams(email: str, team_names: list[str]):
+def update_user_teams(email: str, team_ids: list[int]):
     """
     Update the list of favorite teams for the newsletter.
     """
@@ -86,7 +86,7 @@ def update_user_teams(email: str, team_names: list[str]):
                 "abbreviation": team['abbreviation']
             }
             for team in all_teams
-            if team['full_name'] in team_names
+            if team['id'] in team_ids
         ]
 
 

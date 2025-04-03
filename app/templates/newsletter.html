@@ -1,22 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NBA Newsletter - {{ date }}</title>
+    <style>
+        @media only screen and (max-width: 600px) {
+            body {
+                padding: 12px !important;
+            }
+            h2 {
+                font-size: 20px !important;
+            }
+            h3, h4 {
+                font-size: 16px !important;
+            }
+            table {
+                font-size: 12px !important;
+            }
+            .team-info {
+                flex-direction: column !important;
+                gap: 4px !important;
+                text-align: center !important;
+            }
+        }
+    </style>
 </head>
 <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 24px;">
-    <h2 style="color: #333;">NBA Game Recap - {{ date }}</h2>
+    <h2 style="color: #2c3e50; text-align: center;">NBA Game Recap - {{ date }}</h2>
 
     {% for game in games %}
-    <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 24px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-        <h3 style="margin-bottom: 8px;">{{ game.homeTeam.teamCity }} {{ game.homeTeam.teamName }} ({{ game.homeTeam.score }})
-            vs
-            {{ game.awayTeam.teamCity }} {{ game.awayTeam.teamName }} ({{ game.awayTeam.score }})</h3>
+    {% set is_home_win = game.homeTeam.score > game.awayTeam.score %}
+    {% set winner = game.homeTeam if is_home_win else game.awayTeam %}
+    {% set loser = game.awayTeam if is_home_win else game.homeTeam %}
 
-        <p><strong>Status:</strong> {{ game.gameStatusText }}</p>
+    <div style="background: white; border-radius: 12px; padding: 24px; margin-bottom: 32px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+        <div class="team-info" style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <img src="https://cdn.nba.com/logos/nba/{{ game.awayTeam.teamId }}/global/L/logo.svg" alt="{{ game.awayTeam.teamTricode }} logo" width="32" height="32" style="max-width: 100%; height: auto;" />
+                <strong>{{ game.awayTeam.teamCity }} {{ game.awayTeam.teamName }}</strong>
+                <span>({{ game.awayTeam.score }})</span>
+            </div>
+            <span style="font-weight: bold;">vs</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <img src="https://cdn.nba.com/logos/nba/{{ game.homeTeam.teamId }}/global/L/logo.svg" alt="{{ game.homeTeam.teamTricode }} logo" width="32" height="32" style="max-width: 100%; height: auto;" />
+                <strong>{{ game.homeTeam.teamCity }} {{ game.homeTeam.teamName }}</strong>
+                <span>({{ game.homeTeam.score }})</span>
+            </div>
+        </div>
 
-        <h4>Game Leaders</h4>
-        <ul>
+        <p style="margin-top: 12px;"><strong>Status:</strong> {{ game.gameStatusText }}</p>
+
+        <h4 style="margin-top: 16px;"><strong>Game Leaders</strong></h4>
+        <ul style="padding-left: 20px;">
             <li><strong>{{ game.gameLeaders.homeLeaders.name }}</strong> ({{ game.homeTeam.teamTricode }}) -
                 {{ game.gameLeaders.homeLeaders.points }} pts,
                 {{ game.gameLeaders.homeLeaders.rebounds }} reb,
@@ -27,32 +63,37 @@
                 {{ game.gameLeaders.awayLeaders.assists }} ast</li>
         </ul>
 
-        <h4>Quarter Scores</h4>
-        <table style="width:100%; border-collapse: collapse; margin-top: 8px;">
+        <h4 style="margin-top: 20px;"><strong>Quarter Scores</strong></h4>
+        <table style="width:100%; border-collapse: collapse; margin-top: 12px; font-size: 14px;">
             <thead>
-                <tr style="background-color: #eee;">
-                    <th style="padding: 8px;">Team</th>
+                <tr style="background-color: #ecf0f1;">
+                    <th style="padding: 10px; text-align: left;">Team</th>
                     {% for period in game.homeTeam.periods %}
-                        <th style="padding: 8px;">Q{{ period.period }}</th>
+                        <th style="padding: 10px; text-align: center;">Q{{ period.period }}</th>
                     {% endfor %}
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td style="padding: 8px;">{{ game.homeTeam.teamTricode }}</td>
+                <tr style="background-color: #fafafa;">
+                    <td style="padding: 10px; font-weight: bold;">{{ game.homeTeam.teamTricode }}</td>
                     {% for period in game.homeTeam.periods %}
-                        <td style="padding: 8px; text-align: center;">{{ period.score }}</td>
+                        <td style="padding: 10px; text-align: center;">{{ period.score }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
-                    <td style="padding: 8px;">{{ game.awayTeam.teamTricode }}</td>
+                    <td style="padding: 10px; font-weight: bold;">{{ game.awayTeam.teamTricode }}</td>
                     {% for period in game.awayTeam.periods %}
-                        <td style="padding: 8px; text-align: center;">{{ period.score }}</td>
+                        <td style="padding: 10px; text-align: center;">{{ period.score }}</td>
                     {% endfor %}
                 </tr>
             </tbody>
         </table>
+
+        <p style="margin-top: 16px; font-style: italic; color: #7f8c8d;">
+            {{ winner.teamCity }} {{ winner.teamName }} ({{ winner.score }}) defeated {{ loser.teamCity }} {{ loser.teamName }} ({{ loser.score }})
+        </p>
     </div>
     {% endfor %}
 </body>
 </html>
+
