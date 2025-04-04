@@ -26,19 +26,22 @@ def list_subscribers():
     except Exception as e:
         return APIResponse.error_response(str(e), "Failed to retrieve subscribers")
 
+
 @router.post("/subscribe", response_model=APIResponse[UserOut])
 def register_user(user: UserCreate):
     """
-    Subscribe to the newsletter.
+    Subscribe to the newsletter or retrieve existing user.
     """
     table = get_table(TABLE_NAME)
-    
-    # Check for existing user with the same email
+
     try:
+        # Check for existing user with the same email
         existing_user = table.get_item(Key={"email": user.email}).get("Item")
         if existing_user:
-            return APIResponse.error_response("Email already registered", "Registration failed")
-            
+            # Instead of returning an error, return the existing user with a different message
+            return APIResponse.success_response(existing_user, "Existing user retrieved")
+
+        # If user doesn't exist, create new user
         item = {
             "email": user.email,
             "teams": [],
@@ -46,12 +49,13 @@ def register_user(user: UserCreate):
             "created_at": datetime.now(timezone.utc).isoformat(),
             "updated_at": datetime.now(timezone.utc).isoformat()
         }
-        
+
         table.put_item(Item=item)
         return APIResponse.success_response(item, "User registered successfully")
     except Exception as e:
         return APIResponse.error_response(str(e), "Failed to register user")
-    
+
+
 @router.get("/subscribe/{email}", response_model=APIResponse[UserOut])
 def get_user(email: str):
     """

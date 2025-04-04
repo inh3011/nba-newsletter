@@ -4,17 +4,26 @@ import { Mail, ShoppingBasket as Basketball, CheckCircle2, Loader2 } from 'lucid
 
 interface Team {
   id: number;
-  full_name: string;
+  name: string;
   abbreviation: string;
 }
 
-function App() {
+interface User {
+  email: string;
+  teams: Team[];
+  players: any[];
+  created_at: string;
+  updated_at: string;
+}
+
+const App: React.FC = () => {
   const [email, setEmail] = useState('');
   const [step, setStep] = useState(1);
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [selectedTeams, setSelectedTeams] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [selectedTeams, setSelectedTeams] = useState<number[]>([]);
+  const [user, setUser] = useState<User | null>(null);
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,11 +31,22 @@ function App() {
     setError('');
 
     try {
+      // Subscribe user
       const response = await axios.post('/api/users/subscribe', { email });
       if (!response.data.success) {
         setError(response.data.error || response.data.message);
         return;
       }
+
+      // Fetch user data to get current team selections
+      const userResponse = await axios.get(`/api/users/subscribe/${encodeURIComponent(email)}`);
+      if (userResponse.data.success) {
+        setUser(userResponse.data.data);
+        // Set the selected teams from user data
+        setSelectedTeams(userResponse.data.data.teams.map((team: Team) => team.id));
+      }
+
+      // Fetch available teams
       const { data: { data } } = await axios.get('/api/teams');
       if (!data) {
         setError('Failed to load teams data');
