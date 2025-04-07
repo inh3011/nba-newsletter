@@ -116,32 +116,6 @@ curl "http://localhost:8000/api/players/search?name=Stephen%20Curry"
 curl "http://localhost:8000/api/newsletters/preview"
 ```
 
-### Troubleshooting
-
-1. API Connection Issues
-- Error: "NBA API connection failed"
-  ```bash
-  # Check API key configuration
-  echo $BALLDONTLIE_API_KEY
-  ```
-- Solution: Verify API key in environment variables
-
-2. DynamoDB Access Issues
-- Error: "Unable to connect to DynamoDB"
-  ```bash
-  # Check AWS credentials
-  aws configure list
-  ```
-- Solution: Verify AWS credentials and permissions
-
-3. Newsletter Generation Issues
-- Error: "Template not found"
-  ```bash
-  # Verify template location
-  ls app/templates/newsletter.html
-  ```
-- Solution: Ensure template files are in correct location
-
 ## Data Flow
 The application processes NBA game data and user preferences to generate personalized newsletters.
 
