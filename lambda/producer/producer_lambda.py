@@ -12,7 +12,7 @@ sqs = boto3.client("sqs")
 SQS_URL = os.getenv("SQS_QUEUE_URL")
 
 # --- Jinja2 Template Setup ---
-env = Environment(loader=FileSystemLoader("."))
+env = Environment(loader=FileSystemLoader(".."))
 template = env.get_template("newsletter_template.html")
 
 def get_today_games():
