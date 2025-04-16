@@ -7,7 +7,7 @@ from datetime import datetime
 
 # --- AWS Resource Setup ---
 dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table(os.getenv("USERS_TABLE_NAME", "Users"))
+table = dynamodb.Table("users")
 sqs = boto3.client("sqs")
 SQS_URL = os.getenv("SQS_QUEUE_URL")
 
