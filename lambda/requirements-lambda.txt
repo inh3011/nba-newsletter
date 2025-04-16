@@ -1,5 +1,0 @@
-nba_api
-jinja2
-boto3
-requests
-urllib3
