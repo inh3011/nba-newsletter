@@ -183,5 +183,7 @@ venv_linux/
 .coverage
 
 # lambda
-lambda/build
-nba_lambda_deploy.zip
+lambda/producer/build
+lambda/consumer/build
+consumer_lambda.zip
+producer_lambda.zip
