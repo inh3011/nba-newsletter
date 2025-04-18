@@ -187,3 +187,14 @@ lambda/producer/build
 lambda/consumer/build
 consumer_lambda.zip
 producer_lambda.zip
+
+# terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+.crash
+terraform.tfvars
+override.tf
+override.tf.json
+*.tfplan
+.terraform.lock.hcl
