@@ -11,3 +11,8 @@ variable "gmail_app_password" {
   description = "Gmail app password"
   type        = string
 }
+
+variable "sqs_queue_url" {
+  description = "SQS queue URL for email messages"
+  type        = string
+}
