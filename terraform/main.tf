@@ -61,3 +61,33 @@ resource "aws_lambda_function" "producer" {
     ignore_changes = [filename, source_code_hash]
   }
 }
+
+resource "aws_lambda_function" "consumer" {
+  function_name = "nbaNewsletterConsumer"
+  handler       = "consumer_lambda.lambda_handler"
+  runtime       = "python3.13"
+  role          = aws_iam_role.lambda_exec.arn
+
+  filename         = "${path.module}/../lambda/consumer/consumer_lambda.zip"
+  source_code_hash = filebase64sha256("${path.module}/../lambda/consumer/consumer_lambda.zip")
+
+  environment {
+    variables = {
+      GMAIL_ADDRESS      = var.gmail_address
+      GMAIL_APP_PASSWORD = var.gmail_app_password
+    }
+  }
+
+  timeout = 30
+
+  lifecycle {
+    ignore_changes = [filename, source_code_hash]
+  }
+}
+
+resource "aws_lambda_event_source_mapping" "consumer_sqs_trigger" {
+  event_source_arn = aws_sqs_queue.newsletter_queue.arn
+  function_name    = aws_lambda_function.consumer.arn
+  batch_size       = 1
+  enabled          = true
+}
