@@ -90,9 +90,11 @@ terraform apply
 
 ## Environment Variables (.env)
 
+- `AWS_REGION`
+- `BALLDONTLIE_API_KEY`
+- `SQS_QUEUE_URL`
 - `GMAIL_ADDRESS`
 - `GMAIL_APP_PASSWORD`
-- `SQS_QUEUE_URL`
 
 > (Must be set in Lambda console environment variables)
 
