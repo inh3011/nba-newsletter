@@ -11,11 +11,11 @@ It is built using a **serverless architecture** with various AWS services.
 
 ```mermaid
 flowchart TD
-  A(EventBridge (Every day at 15:00 KST)) --> B(nbaNewsletterProducer (Lambda))
-  B --> C(Fetch subscribers from DynamoDB)
-  B --> D(Push email tasks to SQS (nbaNewsletterQueue))
-  D --> E(nbaNewsletterConsumer (Lambda, triggered by SQS))
-  E --> F(Send emails using Gmail SMTP)
+    A(EventBridge - Every day at 15:00 KST) --> B(nbaNewsletterProducer Lambda)
+    B --> C(Fetch subscribers from DynamoDB)
+    C --> D(Push email tasks to SQS - nbaNewsletterQueue)
+    D --> E(nbaNewsletterConsumer Lambda - triggered by SQS)
+    E --> F(Send emails using Gmail SMTP)
 ```
 
 ---
