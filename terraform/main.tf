@@ -130,9 +130,6 @@ resource "aws_lambda_function" "producer" {
     aws_sqs_queue.newsletter_queue
   ]
 
-  lifecycle {
-    ignore_changes = [filename, source_code_hash]
-  }
 }
 
 # Lambda function to send emails from SQS tasks (Consumer)
@@ -163,9 +160,6 @@ resource "aws_lambda_function" "consumer" {
     aws_sqs_queue.newsletter_queue
   ]
 
-  lifecycle {
-    ignore_changes = [filename, source_code_hash]
-  }
 }
 
 # Connect the SQS queue to the Consumer Lambda as trigger
