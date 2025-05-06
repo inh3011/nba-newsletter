@@ -16,6 +16,19 @@ data "aws_iam_policy_document" "lambda_sqs_policy" {
   }
 }
 
+# IAM policy document for allowing Lambda to scan DynamoDB users table
+data "aws_iam_policy_document" "lambda_dynamodb_policy" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "dynamodb:Scan"
+    ]
+    resources = [
+      "arn:aws:dynamodb:ap-northeast-2:915650020635:table/users"
+    ]
+  }
+}
+
 # IAM policy to grant SQS permissions to Lambda
 resource "aws_iam_policy" "lambda_sqs_policy" {
   name        = "${local.resource_prefix}-lambda-sqs-policy"
@@ -49,6 +62,16 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
 resource "aws_iam_role_policy_attachment" "lambda_sqs" {
   role       = aws_iam_role.lambda_exec.name
   policy_arn = aws_iam_policy.lambda_sqs_policy.arn
+}
+
+resource "aws_iam_policy" "lambda_dynamodb_policy" {
+  name   = "${local.resource_prefix}-lambda-dynamodb-policy"
+  policy = data.aws_iam_policy_document.lambda_dynamodb_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_dynamodb" {
+  role       = aws_iam_role.lambda_exec.name
+  policy_arn = aws_iam_policy.lambda_dynamodb_policy.arn
 }
 
 # CloudWatch log group for Lambda functions
